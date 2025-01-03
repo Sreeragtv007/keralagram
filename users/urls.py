@@ -1,7 +1,7 @@
 from django.urls import path,include
-from .views import index,userRegistration
+from .views import uploadPost,userRegistration
 
 urlpatterns = [
-    path('index/',index.as_view()),
+    path('upload/',uploadPost.as_view()),
     path('register/',userRegistration.as_view()),
 ]

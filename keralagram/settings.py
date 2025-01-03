@@ -140,3 +140,14 @@ REST_FRAMEWORK = {
     )
   
 }
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),  # Increase to 24 hours
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),   # Refresh token valid for 7 days
+    "ROTATE_REFRESH_TOKENS": True,                # Automatically issue a new refresh token when used
+    "BLACKLIST_AFTER_ROTATION": True,             # Blacklist old refresh tokens
+    "ALGORITHM": "HS256",                         # Token signing algorithm
+    "SIGNING_KEY": SECRET_KEY,                    # Use Django's secret key for signing
+    "AUTH_HEADER_TYPES": ("Bearer",),            # Use "Bearer" prefix in authorization headers
+}

@@ -25,7 +25,8 @@ class Profile(models.Model):
 
 
 class Post(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,blank=True, null=True)
+    profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, blank=True, null=True)
 
     title = models.CharField(max_length=50)
 
@@ -33,14 +34,25 @@ class Post(models.Model):
 
     image = models.ImageField(upload_to='post_image', blank=True, null=True)
 
-    
-
     created = models.DateField(auto_now_add=True, blank=True, null=True)
 
     updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    like = models.ForeignKey('likePost',on_delete=models.SET_NULL,blank=True, null=True)
 
     def __str__(self):
         return self.title
-    
 
+
+class postCommets(models.Model):
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,related_name='comments')
+
+    comment = models.TextField()
     
+    
+class likePost(models.Model):
+    
+    like = models.PositiveIntegerField(default=0,blank=True, null=True)
+    
+    user = models.OneToOneField(Profile,on_delete=models.CASCADE,blank=True, null=True)

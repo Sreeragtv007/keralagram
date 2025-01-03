@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework import permissions
 from users.serializers import ProfileSerializer, postSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from .models import Profile, Post
 # from .models import Users
 # Create your views here.
 
@@ -26,16 +27,19 @@ class userRegistration(APIView):
 
 
 class uploadPost(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = postSerializer(Post.objects.all(), many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         data = request.data
-        
-        serializer = postSerializer(data=data,context={'request': request})
-        
+
+        serializer = postSerializer(data=data, context={'request': request})
+
         serializer.is_valid(raise_exception=True)
-        
+
         serializer.save()
-        
-       
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)

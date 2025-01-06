@@ -1,19 +1,13 @@
 from rest_framework import serializers
-from .models import Post, Profile, postCommets
+from .models import Post, Profile, likePost, postCommets
 from django.contrib.auth.models import User
 
-
-class commentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = postCommets
-        fields = ['comment']
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -21,7 +15,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = ['user',]
+        
 
     def validate(self, attrs):
 
@@ -35,12 +30,30 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         profile = Profile.objects.create(user=user, **validated_data)
         return profile
+    
+    
+    
 
+class commentSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = postCommets
+        fields = ['comment']
+        
+    def create(self, validated_data):
+        validated_data['post'] = self.context['post']
+        return super().create(validated_data)
+
+class likeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = likePost
+        fields = ['like']
 
 class postSerializer(serializers.ModelSerializer):
     comments = commentSerializer(many=True, read_only=True)
-    profile = serializers.StringRelatedField()
-    
+    profile = ProfileSerializer(read_only = True)
+    likes = likeSerializer(many=True, read_only=True)    
     
     class Meta:
         model = Post

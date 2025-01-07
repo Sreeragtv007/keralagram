@@ -49,16 +49,26 @@ class likeSerializer(serializers.ModelSerializer):
     class Meta:
         model = likePost
         fields = ['like']
+        depth = 1
+        
+        
 
 class postSerializer(serializers.ModelSerializer):
     comments = commentSerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only = True)
     likes = likeSerializer(many=True, read_only=True)    
-    
     class Meta:
         model = Post
         fields = "__all__"
+    
+    
+    
+    def to_representation(self, instance):
+        repre = super().to_representation(instance)
         
+        repre['test'] = f"{instance.title}"
+        
+        return repre    
 
     def create(self, validated_data):
 
@@ -67,5 +77,7 @@ class postSerializer(serializers.ModelSerializer):
         validated_data['profile'] = profile
 
         return super().create(validated_data)
+    
+    
 
 

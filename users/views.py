@@ -70,9 +70,9 @@ class likePost(APIView):
 
     def get(self, request, pk):
         post = Post.objects.get(id=pk)
-        print(post)
         
-        like = likePost.objectts.create
+        
+        like = likePost.objectts.create(post=post, user=request.user)
         
         print(like)
 
